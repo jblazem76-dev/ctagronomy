@@ -1,0 +1,145 @@
+name: Deploy ctagronomy-app (production)
+
+# Builds the image in Azure Container Registry and deploys it to the existing
+# Azure Container App, then verifies the new revision is healthy.
+#
+# Requires repo secret AZURE_CREDENTIALS: the JSON output of
+#   az ad sp create-for-rbac --sdk-auth ...
+# for a service principal with AcrPush on nilproofacr and Contributor (or a
+# scoped role that allows `containerapp update`) on resource group nilproof-rg.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Serialize production deploys of THIS app. Distinct from the nilproof group.
+concurrency:
+  group: deploy-ctagronomy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  AZURE_SUBSCRIPTION_ID: 623cc75e-e058-423e-bd9e-7bd1e1270930
+  RESOURCE_GROUP: nilproof-rg
+  CONTAINERAPP_NAME: ctagronomy-app
+  CONTAINERAPP_ENVIRONMENT: nilproof-env
+  ACR_NAME: nilproofacr
+  REGISTRY: nilproofacr.azurecr.io
+  # Shared registry — namespace the image under the app name.
+  IMAGE_REPOSITORY: ctagronomy-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Resolve image reference
+        id: image
+        run: |
+          tag="${GITHUB_SHA::7}"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "image=${REGISTRY}/${IMAGE_REPOSITORY}:${tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Build image in ACR
+        run: |
+          set -euo pipefail
+          az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+          az acr build \
+            --registry "$ACR_NAME" \
+            --image "${IMAGE_REPOSITORY}:${{ steps.image.outputs.tag }}" \
+            --image "${IMAGE_REPOSITORY}:latest" \
+            --file Dockerfile \
+            .
+
+      - name: Deploy to Container App
+        run: |
+          set -euo pipefail
+          az containerapp update \
+            --name "$CONTAINERAPP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "${{ steps.image.outputs.image }}"
+
+      - name: Enforce single-revision mode
+        run: |
+          set -euo pipefail
+          az containerapp revision set-mode \
+            --name "$CONTAINERAPP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode single
+
+      - name: Verify new revision is healthy
+        run: |
+          set -euo pipefail
+
+          latest=$(az containerapp show \
+            -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" \
+            --query "properties.latestRevisionName" -o tsv)
+          echo "Latest revision: $latest"
+
+          # Wait for the new revision to finish provisioning.
+          provisioned=false
+          for i in $(seq 1 30); do
+            prov=$(az containerapp revision show \
+              -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" --revision "$latest" \
+              --query "properties.provisioningState" -o tsv)
+            running=$(az containerapp revision show \
+              -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" --revision "$latest" \
+              --query "properties.runningState" -o tsv || true)
+            echo "[$i] provisioningState=$prov runningState=$running"
+
+            if [ "$prov" = "Provisioned" ]; then
+              provisioned=true
+              break
+            fi
+            if [ "$prov" = "Failed" ]; then
+              echo "::error::Revision $latest failed to provision."
+              az containerapp revision show \
+                -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" --revision "$latest" -o json || true
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$provisioned" != "true" ]; then
+            echo "::error::Timed out waiting for revision $latest to provision."
+            exit 1
+          fi
+
+          # HTTP smoke test against the ingress FQDN. This also wakes the
+          # revision if it has scaled to zero. A response below 500 means the
+          # server is up (app-level 4xx is not treated as a deploy failure).
+          fqdn=$(az containerapp show \
+            -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" \
+            --query "properties.configuration.ingress.fqdn" -o tsv || true)
+
+          if [ -z "$fqdn" ]; then
+            echo "No external ingress configured; skipping HTTP probe."
+            echo "Revision $latest is provisioned."
+            exit 0
+          fi
+
+          echo "Probing https://$fqdn/ ..."
+          for i in $(seq 1 12); do
+            code=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 10 "https://$fqdn/" || echo 000)
+            echo "[$i] HTTP $code"
+            if [ "$code" != "000" ] && [ "$code" -lt 500 ]; then
+              echo "App is responding (HTTP $code). Deploy verified."
+              exit 0
+            fi
+            sleep 10
+          done
+
+          echo "::error::Revision $latest provisioned but did not return a <500 response on / after retries."
+          az containerapp logs show \
+            -n "$CONTAINERAPP_NAME" -g "$RESOURCE_GROUP" --revision "$latest" --tail 100 --type system || true
+          exit 1
