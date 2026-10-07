@@ -23,7 +23,13 @@ test('serves pages, real 404s, redirects, form api', async () => {
   assert.match(await nf.text(), /the press\./);
   assert.equal((await get('/nope')).status, 404);
   assert.equal((await get('/../server.mjs')).status, 404);
+  const apex = await get('/products?x=1', { headers: { 'x-forwarded-host': 'ctagronomy.com' } });
+  assert.equal(apex.status, 301);
+  assert.equal(apex.headers.get('location'), 'https://www.ctagronomy.com/products?x=1');
   assert.equal((await get('/home')).status, 301);
+  const old = await get('/products.html?x=1');
+  assert.equal(old.status, 301);
+  assert.equal(old.headers.get('location'), '/products?x=1');
   assert.equal((await get('/products/')).status, 301);
   const bad = await get('/api/form', { method: 'POST', body: JSON.stringify({ form: 'quote' }) });
   assert.equal(bad.status, 400);

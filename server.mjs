@@ -14,11 +14,23 @@ const PORT = Number(process.env.PORT) || 8080;
 const TO = process.env.FORM_TO || 'ctagronomy@gmail.com';
 const FROM = process.env.FORM_FROM || 'CTA Website <onboarding@resend.dev>';
 
-// Old URL -> new URL (301). Fill in from the live site's sitemap before launch.
+// Old URL -> new URL (301). The old site is static .html on GoDaddy, so the likely
+// old paths are the page names with .html. Add real ones from the old site's file list.
 export const REDIRECTS = {
   '/index.html': '/',
   '/home': '/',
+  '/home.html': '/',
   '/product': '/products',
+  '/products.html': '/products',
+  '/product.html': '/products',
+  '/programs.html': '/programs',
+  '/science.html': '/science',
+  '/resources.html': '/resources',
+  '/dealer.html': '/dealer',
+  '/dealers.html': '/dealer',
+  '/contact.html': '/contact',
+  '/contact-us': '/contact',
+  '/contact-us.html': '/contact',
 };
 
 const TYPES = {
@@ -123,6 +135,9 @@ export const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');
     if (url.pathname === '/api/form') return await handleForm(req, res);
+    // Apex -> www (the canonical host used in canonical links and the sitemap).
+    const host = (req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
+    if (host === 'ctagronomy.com') { res.writeHead(301, { Location: 'https://www.ctagronomy.com' + req.url }); return res.end(); }
     if (url.pathname === '/healthz') { res.writeHead(200); return res.end('ok'); }
     if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
     const to = REDIRECTS[url.pathname.replace(/(.)\/$/, '$1')];
