@@ -135,6 +135,9 @@ export const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');
     if (url.pathname === '/api/form') return await handleForm(req, res);
+    // Apex -> www (the canonical host used in canonical links and the sitemap).
+    const host = (req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
+    if (host === 'ctagronomy.com') { res.writeHead(301, { Location: 'https://www.ctagronomy.com' + req.url }); return res.end(); }
     if (url.pathname === '/healthz') { res.writeHead(200); return res.end('ok'); }
     if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
     const to = REDIRECTS[url.pathname.replace(/(.)\/$/, '$1')];
