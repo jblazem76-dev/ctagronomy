@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { HELP_LIST } from '../data/site.mjs';
+---
+<Base title="Request a quote" description="Contact CTA for program guidance, custom timing, or volume pricing." nosidetab>
+  <section class="wrap stack" style="padding-top:64px;gap:56px">
+    <div class="g2">
+      <h1 class="h-page">Request a quote.</h1>
+      <p class="lede">Contact CTA when you need program guidance, custom timing, or volume pricing. If you already know the products you need, online ordering will be available soon.</p>
+    </div>
+    <div class="g2 s" style="gap:56px 80px">
+      <QuoteForm kind="contact" rows={5} />
+      <div class="stack" style="gap:40px">
+        <div class="stack" style="gap:12px">
+          <h2 style="font-size:32px;font-weight:600">How We Can Help</h2>
+          {HELP_LIST.map((h) => <p style="display:flex;gap:12px"><span class="dash">—</span><span>{h}</span></p>)}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:90px 1fr;gap:8px 16px;font-size:17px;flex:1 1 280px">
+            <span style="color:var(--color-neutral-700)">Contact</span><span>Brent Smith</span>
+            <span style="color:var(--color-neutral-700)">Phone</span><a href="tel:5632101616">563-210-1616</a>
+            <span style="color:var(--color-neutral-700)">Email</span><a href="mailto:ctagronomy@gmail.com">ctagronomy@gmail.com</a>
+            <span style="color:var(--color-neutral-700)">Website</span><span>www.ctagronomy.com</span>
+            <span style="color:var(--color-neutral-700)">Address</span><span>215 E 2nd. Street<br>Dewitt, IA 52742</span>
+          </div>
+          <img src="/assets/cta-qr.svg" alt="QR code for ctagronomy.com" width="140" height="140" style="width:140px;height:140px;display:block">
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

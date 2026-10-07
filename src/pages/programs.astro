@@ -1,0 +1,33 @@
+---
+import Img from '../components/Img.astro';
+import Base from '../layouts/Base.astro';
+import { PROGRAMS } from '../data/content.mjs';
+---
+<Base title="Seasonal programs" description="Programs bundle compatible inputs so seasonal goals stay aligned from the root zone to the leaf surface.">
+  <section class="wrap stack" style="padding-top:64px;gap:112px">
+    <div class="g2">
+      <h1 class="h-page">Seasonal programs.</h1>
+      <p class="lede">Programs are built to reduce decision fatigue. They bundle compatible inputs so seasonal goals stay aligned from the root zone to the leaf surface.</p>
+    </div>
+    {PROGRAMS.map((pg) => (
+      <article class="prog">
+        <div class="g2">
+          <div class="stack" style="gap:12px">
+            <span class="numeral" data-count>{pg.n}</span>
+            <h2 class="h-big fx hfx">{pg.title}</h2>
+          </div>
+          <div class="ph dots fx"><Img src={pg.img} alt={pg.title} sizes="(min-width:900px) 580px, 100vw" style="aspect-ratio:16/9" /></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:32px 48px">
+          <div class="stack" style="gap:10px"><h3>The science</h3><p>{pg.science}</p></div>
+          <div class="stack" style="gap:10px"><h3>The consequences</h3><p>{pg.cons}</p></div>
+          <div class="stack" style="gap:10px"><h3 style="color:var(--color-accent-700)">The solution</h3><p>{pg.sol}</p></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px">
+          <span class="kicker n">Recommended products</span>
+          {pg.prods.map((p) => <a href={p.href} style="font-size:18px;text-decoration:underline;text-underline-offset:3px">{p.name}</a>)}
+        </div>
+      </article>
+    ))}
+  </section>
+</Base>

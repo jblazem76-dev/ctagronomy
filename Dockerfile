@@ -48,7 +48,7 @@ RUN npm prune --omit=dev && npm cache clean --force
 
 USER node
 EXPOSE 8080
-# ADAPT: expects a "start" script that launches the server on $PORT.
+# `npm start` runs server.mjs, which serves dist/ on $PORT.
 CMD ["npm", "start"]
 
 # ---------------------------------------------------------------------------

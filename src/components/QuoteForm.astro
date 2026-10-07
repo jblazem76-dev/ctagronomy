@@ -1,0 +1,32 @@
+---
+// Shared by the quote popup and /contact. kind: 'quote' | 'contact'
+const { kind = 'contact', rows = 5, id = kind } = Astro.props;
+---
+<div data-form-root={kind}>
+  <form class="form" data-form={kind} method="post" action="/contact" novalidate>
+    <div class="form-err" role="alert" hidden data-err>Your request didn’t send. Check your connection and try again, or email <a href="mailto:ctagronomy@gmail.com">ctagronomy@gmail.com</a>.</div>
+    <div class="field-grid">
+      <label class="field">Name *<input class="input" name="fullname" autocomplete="name"><span class="err" hidden></span></label>
+      <label class="field">Organization<input class="input" name="org" autocomplete="organization"></label>
+      <label class="field">Email *<input class="input" name="email" type="email" autocomplete="email"><span class="err" hidden></span></label>
+      <label class="field">Phone<input class="input" name="phone" type="tel" autocomplete="tel"></label>
+    </div>
+    <label class="field">I manage
+      <select class="input" name="type">
+        <option>Golf course</option><option>Sports turf</option><option>Lawn care / landscape business</option><option>Sod farm</option><option>Other</option>
+      </select>
+    </label>
+    <label class="field">Products or questions<textarea class="input" name="message" rows={rows} style="resize:vertical"></textarea></label>
+    <div class="hp" aria-hidden="true"><label>Leave blank<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <button type="submit" class="btn btn-primary btn-submit" data-submit data-label="Send request">Send request</button>
+  </form>
+  <div class="form-ok" role="status" hidden data-ok>
+    <span class="kicker">Request received</span>
+    <h2 style="font-size:clamp(32px,3.6vw,48px);font-weight:600;letter-spacing:-.02em">Thank you. We’ll be in touch.</h2>
+    <p style="font-size:19px">A reply will come to <span data-email></span>. Need an answer sooner? Call Brent at <a href="tel:5632101616">563-210-1616</a>.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      {kind === 'quote' && <button type="button" class="btn btn-primary btn-lg" data-close-quote>Done</button>}
+      <button type="button" class="btn btn-secondary btn-ink" style="min-height:44px" data-reset>Send another request</button>
+    </div>
+  </div>
+</div>

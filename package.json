@@ -1,0 +1,20 @@
+{
+  "name": "ctagronomy-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run optimize && astro dev",
+    "optimize": "node scripts/optimize-images.mjs",
+    "build": "npm run optimize && astro build",
+    "start": "node server.mjs",
+    "test": "node --test scripts/server.test.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "sharp": "^0.34.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,38 @@
+---
+import Img from '../../components/Img.astro';
+import Base from '../../layouts/Base.astro';
+import { PRODUCTS, CATS } from '../../data/content.mjs';
+---
+<Base title="All products" description="Explore CTA inputs by category. Each product includes a clear benefit statement, application summary, and the science behind it." active="/products">
+  <section class="wrap stack" style="padding-top:64px;gap:36px" data-products>
+    <div class="g2">
+      <h1 class="h-page">All products.</h1>
+      <p class="lede">Explore CTA inputs by category. Each product includes a clear benefit statement, application summary, and the science behind it. <a href="/compare">Compare products side by side →</a></p>
+    </div>
+    <div class="chips" role="group" aria-label="Filter by category">
+      {CATS.map((c) => <button type="button" class="chip" data-cat={c} aria-pressed={c === 'All' ? 'true' : 'false'}>{c}</button>)}
+    </div>
+    <div class="stack">
+      {PRODUCTS.map((p) => (
+        <div class="prow" data-slug={p.slug} data-cat={p.kicker}>
+          <a href={p.href}>
+            <div class="thumb"><Img src={`/assets/jugs/${p.slug === 'efficiensi' ? 'efficiensi-v2' : p.slug}.png`} alt="" sizes="96px" /></div>
+            <div class="stack" style="gap:4px">
+              <span class={`k-s${p.cho ? ' m' : ''}`}>{p.kicker}</span>
+              <span class="nm">{p.name} {p.grade && <span>{p.grade}</span>}</span>
+            </div>
+            <span class="hd">{p.head}</span>
+            <span class="bn">{p.bens[0]}</span>
+          </a>
+          <button type="button" class="cmp-btn" data-compare={p.slug} data-name={p.name} aria-pressed="false">+ Compare</button>
+        </div>
+      ))}
+    </div>
+    <div class="tray" hidden data-tray>
+      <span class="kicker">Compare</span>
+      <b data-tray-names></b>
+      <button type="button" class="btn btn-ghost" style="min-height:44px" data-tray-clear>Clear</button>
+      <a href="/compare" class="btn btn-primary" style="min-height:44px;white-space:nowrap" data-tray-go>Compare</a>
+    </div>
+  </section>
+</Base>

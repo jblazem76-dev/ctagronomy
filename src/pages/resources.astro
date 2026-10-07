@@ -1,0 +1,43 @@
+---
+import Img from '../components/Img.astro';
+import Base from '../layouts/Base.astro';
+import { LABEL_LIST } from '../data/content.mjs';
+---
+<Base title="Resources" description="Download the 2026 product catalog, the CTA 3-Step Method chart and product labels.">
+  <section class="wrap stack" style="padding-top:64px;gap:80px">
+    <h1 class="h-page">Resources.</h1>
+    <div class="g2 c" style="gap:40px 80px">
+      <div class="stack" style="gap:18px">
+        <span class="kicker">Product Catalog · 2026</span>
+        <h2 class="h-sec">High Performance. <em>Max returns.</em></h2>
+        <p style="font-size:19px">Every product, rate and seasonal program in one document.</p>
+        <a href="/assets/CTA-Catalog-2026.pdf" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="align-self:flex-start">Download the catalog (PDF)</a>
+      </div>
+      <div class="ph dots fx"><Img src="/assets/photo-dew.jpg" alt="Dew on turf at sunrise" sizes="(min-width:900px) 560px, 100vw" style="aspect-ratio:4/3" /></div>
+    </div>
+    <div class="g2 c" style="gap:40px 80px">
+      <a href="/assets/cta-3-step-method.png" target="_blank" rel="noopener"><Img src="/assets/cta-3-step-method.png" alt="The CTA 3-Step Method for plant health" sizes="(min-width:900px) 560px, 100vw" style="width:100%;height:auto;display:block" /></a>
+      <div class="stack" style="gap:14px">
+        <h2 style="font-size:40px;font-weight:600;letter-spacing:-.02em">The CTA 3-Step Method™ chart</h2>
+        <p style="font-size:19px">Feed the Plant. Condition the Soil. Manage Soil Moisture.</p>
+        <a href="/assets/cta-3-step-method.png" target="_blank" rel="noopener" class="btn btn-secondary btn-ink" style="align-self:flex-start;white-space:nowrap;min-height:44px">Open full size</a>
+      </div>
+    </div>
+    <div class="stack" style="gap:24px">
+      <div class="g2" style="gap:16px 64px">
+        <h2 class="h-sec">Product labels.</h2>
+        <p style="font-size:19px;max-width:520px">Front and back labels for every registered product, as PDFs. Labels for products not listed are available on request.</p>
+      </div>
+      <table class="table">
+        <tbody>
+          {LABEL_LIST.map((l) => (
+            <tr>
+              <td><a href={l.href} style="color:var(--color-text);text-decoration:none;font-weight:600">{l.name}</a> <span style="color:var(--color-neutral-700)">{l.grade}</span></td>
+              <td style="text-align:right;white-space:nowrap"><span style="display:inline-flex;gap:6px"><a href={l.front} target="_blank" rel="noopener">{l.frontLabel}</a>{l.back && <><span>·</span><a href={l.back} target="_blank" rel="noopener">Back</a></>}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

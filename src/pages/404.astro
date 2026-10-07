@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" noindex>
+  <section class="wrap" style="padding-top:72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px 80px;align-items:end">
+    <div class="cmyk-num" style="font-size:clamp(160px,24vw,340px);font-weight:700;letter-spacing:-.04em"><span class="paper">404</span><span class="plate plate-c" aria-hidden="true">404</span><span class="plate plate-m" aria-hidden="true">404</span><span class="plate plate-y" aria-hidden="true">404</span></div>
+    <div class="stack" style="gap:22px;padding-bottom:12px">
+      <h1 class="h-big">This page didn’t make <em>the press.</em></h1>
+      <p style="font-size:20px;max-width:480px">The link may be old or mistyped. Search the site, or start from one of these pages.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button type="button" class="btn btn-primary btn-lg" data-open-search>Search the site</button>
+        <a href="/products" class="btn btn-secondary btn-ink" style="min-height:44px">All products</a>
+        <a href="/" class="btn btn-ghost" style="min-height:44px">Home</a>
+      </div>
+    </div>
+  </section>
+</Base>
