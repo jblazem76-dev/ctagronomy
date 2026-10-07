@@ -131,6 +131,24 @@ document.addEventListener('click', (e) => {
   if (openQuote(a.dataset.quoteMsg)) e.preventDefault(); // otherwise href="/contact" is the no-JS fallback
 });
 
+/* ---------- catalog popup ---------- */
+const cat = $('[data-catalog]');
+const catFrame = $('[data-catalog-frame]');
+const canEmbedPdf = !!navigator.pdfViewerEnabled && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('[data-open-catalog]');
+  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+  if (!cat || typeof cat.showModal !== 'function' || !canEmbedPdf) return; // phones and PDF-less browsers: the link opens the PDF in a new tab
+  e.preventDefault();
+  setMenu(false);
+  if (!catFrame.getAttribute('src')) catFrame.src = a.href + '#view=FitH';
+  cat.showModal();
+  body.classList.add('dlg-open');
+});
+cat?.addEventListener('close', () => body.classList.remove('dlg-open'));
+cat?.addEventListener('click', (e) => { if (e.target === cat) cat.close(); });
+$('[data-close-catalog]')?.addEventListener('click', () => cat.close());
+
 /* ---------- forms ---------- */
 const REQUIRED = { contact: ['fullname', 'email'], quote: ['fullname', 'email'], dealer: ['fullname', 'company', 'email', 'territory'] };
 const MSG = { fullname: 'Please add your name.', company: 'Please add your company name.', territory: 'Tell us roughly where you would sell.', email: 'Please add your email address.' };
