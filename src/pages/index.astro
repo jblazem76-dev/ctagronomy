@@ -1,0 +1,96 @@
+---
+import Base from '../layouts/Base.astro';
+import { PROGRAMS } from '../data/content.mjs';
+import { STEPS, CHO_PRODUCTS, GALLERY, SURFACES } from '../data/site.mjs';
+const hero = '/assets/result-fairway-sun.jpg';
+---
+<Base>
+  <link slot="head" rel="preload" as="image" href={hero}>
+  <section class="wrap" style="padding-top:56px">
+    <figure style="margin:0">
+      <div class="hero">
+        <div class="ph-bg"><img src={hero} alt="Golf fairway in late-day sun" width="1600" height="900" fetchpriority="high"></div>
+        <div class="hero-scrim"></div>
+        <div class="hero-copy">
+          <h1 class="lines" data-fx-lines><span>High</span><span>Performance.</span><em>Max returns.</em></h1>
+          <div class="stack" style="gap:22px;max-width:440px;padding-bottom:10px">
+            <p>Practical, science-led turf inputs for superintendents, turf managers, and landscape teams who need predictable outcomes.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px">
+              <a href="/products" class="btn btn-primary btn-lg">Explore Products</a>
+              <a href="/contact" class="btn btn-secondary btn-lg btn-paper" data-open-quote>Request a Quote</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption class="surfaces">{SURFACES.map((s) => <span>{s}</span>)}</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap sec stack" style="gap:56px">
+    <div class="g2">
+      <div class="stack" style="gap:14px">
+        <span class="kicker">The CTA 3-Step Method</span>
+        <h2 class="h-big fx hfx">Supplement photosynthesis.</h2>
+      </div>
+      <p style="font-size:20px;max-width:520px">Save time and money with a coordinated blend of products built to give professional applicators the flexibility to create the best program for their surfaces, with less hassle and less waste.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:48px">
+      {STEPS.map((s) => (
+        <div class="stack" style="gap:14px">
+          <span class="numeral" data-count>{s.n}</span>
+          <h3 style="font-size:32px;font-weight:600">{s.t}</h3>
+          <p class="muted">{s.b}</p>
+          <div class="prodlinks">{s.prods.map((p) => <a href={p.href}>{p.name}</a>)}</div>
+        </div>
+      ))}
+    </div>
+    <p style="font-size:20px"><a href="/products/efficiensi" style="font-weight:600">CTA+ / EfficienSi</a> — maximizes uptake and performance of every step.</p>
+  </section>
+
+  <section class="wrap sec" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px 80px;align-items:center">
+    <img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" width="520" height="520" loading="lazy" style="width:100%;max-width:520px;height:auto;display:block">
+    <div class="stack" style="gap:22px">
+      <span class="kicker m">Six carbon enhanced formulations inside</span>
+      <h2 class="h-sec fx hfx"><em>Carbon, hydrogen and oxygen</em> are the building blocks of turf energy.</h2>
+      <div class="stack">
+        {CHO_PRODUCTS.map((p) => <a href={p.href} class="row-link"><b>{p.name}</b><span>{p.head}</span></a>)}
+      </div>
+      <a href="/science" class="btn btn-ghost" style="align-self:flex-start;font-size:17px">Learn about CHO →</a>
+    </div>
+  </section>
+
+  <section class="wrap sec stack" style="gap:32px">
+    <h2 class="h-sec fx hfx">On the surfaces we serve.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px">
+      {GALLERY.map((g) => <div class="ph dots fx"><img src={g.src} alt={g.alt} width="600" height="800" loading="lazy" style="aspect-ratio:3/4"></div>)}
+    </div>
+  </section>
+
+  <section class="wrap sec stack" style="gap:40px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+      <div class="stack" style="gap:14px">
+        <span class="kicker">Seasonal Programs</span>
+        <h2 class="h-sec fx hfx">A plan for every season.</h2>
+      </div>
+      <a href="/programs" class="btn btn-secondary btn-ink" style="white-space:nowrap;min-height:44px">View all programs</a>
+    </div>
+    <div class="cards">
+      {PROGRAMS.map((pg) => (
+        <a href="/programs" class="card-l">
+          <div class="ph dots fx"><img src={pg.img} alt={pg.title} width="640" height="480" loading="lazy" style="aspect-ratio:4/3"></div>
+          <h3>{pg.title}</h3>
+          <p>{pg.science}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap sec" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px 80px;align-items:center">
+    <div class="stack" style="gap:20px">
+      <h2 class="h-big fx hfx">Become a <em>CTA dealer.</em></h2>
+      <p style="font-size:20px;max-width:540px">Carry a line built on agronomy rather than commodity blends. Dealers get program support, technical backing on tank mixes and rates, and a product set that sells on results.</p>
+      <a href="/dealer" class="btn btn-primary btn-lg" style="align-self:flex-start">Dealer program</a>
+    </div>
+    <div class="ph dots fx"><img src="/assets/result-field-wide.jpg" alt="Striped football field from the stands" width="800" height="600" loading="lazy" style="aspect-ratio:4/3"></div>
+  </section>
+</Base>

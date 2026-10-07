@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import { PRODUCTS, labelOf, DETAIL_PHOTOS } from '../../data/content.mjs';
+import { SITE } from '../../data/site.mjs';
+
+export function getStaticPaths() {
+  return PRODUCTS.map((p, i) => ({ params: { slug: p.slug }, props: { p, photo: DETAIL_PHOTOS[i % DETAIL_PHOTOS.length] } }));
+}
+const { p, photo } = Astro.props;
+const lab = labelOf(p.slug);
+const img = `/assets/jugs/${p.slug === 'efficiensi' ? 'efficiensi-v2' : p.slug}.png`;
+const full = p.name + (p.grade ? ' ' + p.grade : '');
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Product', name: full, description: p.head + ' ' + p.bens.join('. ') + '.',
+  image: new URL(img, SITE.url).href, category: p.kicker, brand: { '@type': 'Brand', name: SITE.name },
+  url: new URL(p.href, SITE.url).href,
+};
+---
+<Base title={full} description={`${p.head} ${p.bens[0]}.`} active="/products" ogImage={img}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <section class="wrap stack" style="padding-top:40px;gap:40px" data-product-page={p.slug}>
+    <a href="/products" class="btn btn-ghost" style="align-self:flex-start;font-size:16px;white-space:nowrap">← All products</a>
+    <div class="dgrid">
+      <div class="stack" style="gap:22px">
+        <span class={`kicker${p.cho ? ' m' : ''}`}>{p.kicker}</span>
+        <h1 class="h-prod">{p.head}</h1>
+        <p style="font-size:28px;font-weight:600">{p.name} {p.grade && <span style="font-weight:400;color:var(--color-neutral-700)">{p.grade}</span>}</p>
+        <div class="stack" style="gap:8px">{p.bens.map((b) => <p class="ben"><span class="dash">—</span><span>{b}</span></p>)}</div>
+        <a href="/contact" class="btn btn-primary btn-lg" style="align-self:flex-start;margin-top:8px" data-open-quote data-quote-msg={`I’m interested in ${p.name}. `}>Request a Quote</a>
+      </div>
+      <div class="stack" style="gap:20px;align-items:flex-start">
+        <img class="jug fx jugfx" src={img} alt={p.name} width="520" height="520" data-jug-fallback={photo}>
+        {p.cho && <div class="cho-badge"><img src="/assets/cho-badge.png" alt="Carbon Enhanced Formulation" width="72" height="72"><span>Carbon Enhanced Formulation</span></div>}
+      </div>
+    </div>
+    <div class="dgrid" style="padding-top:32px;align-items:start">
+      <div class="stack" style="gap:16px">
+        <h2 class="label-h">Principle functioning agents</h2>
+        <table class="ptable"><tbody>{p.agents.map((a) => <tr><td>{a.k}</td><td data-count>{a.v}</td></tr>)}</tbody></table>
+        <p style="font-size:15px;font-style:italic;color:var(--color-neutral-700)">{p.note}</p>
+      </div>
+      <div class="stack" style="gap:16px">
+        <h2 class="label-h">Application and rates</h2>
+        {p.rates.map((r) => <div class="stack" style="gap:2px"><span style="font-size:22px;font-weight:600">{r.k}</span><p class="muted">{r.v}</p></div>)}
+        {p.caution && <p class="caution">{p.caution}</p>}
+      </div>
+    </div>
+    <div class="stack" style="gap:16px;padding-top:16px">
+      <h2 class="label-h">Product label</h2>
+      {lab ? (
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <a href={lab.front} target="_blank" rel="noopener" class="btn btn-secondary btn-ink" style="min-height:44px;white-space:nowrap">{lab.back ? 'Front label (PDF)' : 'Product label (PDF)'}</a>
+          {lab.back && <a href={lab.back} target="_blank" rel="noopener" class="btn btn-secondary btn-ink" style="min-height:44px;white-space:nowrap">Back label (PDF)</a>}
+        </div>
+      ) : (
+        <p style="font-size:17px">Label available on request. <a href="/contact">Contact us</a> or call <a href="tel:5632101616">563-210-1616</a>.</p>
+      )}
+    </div>
+  </section>
+</Base>

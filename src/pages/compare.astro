@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Compare products" description="Line up to three CTA products side by side: guaranteed analysis, rates and labels row by row." active="/products">
+  <section class="wrap stack" style="padding-top:40px;gap:40px" data-compare-page>
+    <a href="/products" class="btn btn-ghost" style="align-self:flex-start;font-size:16px;white-space:nowrap">← All products</a>
+    <div class="g2">
+      <h1 class="h-page">Compare <em>products.</em></h1>
+      <p class="lede">Pick up to three products. Guaranteed analysis, rates and labels line up row by row. The higher value in each nutrient row is set in bold.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+      <button type="button" class="cmp-btn" style="font-size:15px;padding:8px 14px" aria-pressed="false" data-diff>Show differences only</button>
+      <p class="caution" style="font-size:16px;max-width:640px" hidden data-forms-note>These products come in different forms. Dry rates are by weight (oz, lbs); liquid rates are by volume (fl oz, gal), so the same number is not the same amount.</p>
+    </div>
+    <div class="cmp-wrap" data-cmp-mount><noscript><p>Product comparison needs JavaScript. See each product on its own page from <a href="/products">All products</a>.</p></noscript></div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px" hidden data-cmp-add>
+      <span class="kicker n">Add a product</span>
+      <select class="input" aria-label="Add a product" style="font-size:16px;min-height:44px;max-width:320px"><option value="">Choose…</option></select>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import { SOIL_TESTS } from '../data/content.mjs';
+---
+<Base title="Science" description="Clear, practical science: the Carbon Advantage (CHO), photosynthesis vs. respiration, and why foliar nutrition matters.">
+  <section class="wrap stack" style="padding-top:64px;gap:96px">
+    <div class="g2">
+      <h1 class="h-page">Science.</h1>
+      <p class="lede">Clear, practical science. CTA focuses on what improves plant energy and stability without adding noise to your decision-making.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px 80px;align-items:center">
+      <img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" width="440" height="440" style="width:100%;max-width:440px;height:auto;display:block">
+      <div class="stack" style="gap:16px">
+        <h2 class="h-sec">The Carbon Advantage <em>(CHO)</em></h2>
+        <p style="font-size:20px">Carbon, hydrogen, and oxygen are the building blocks of turf energy. When these elements are supported through photosynthesis, the plant has more energy to allocate to roots, density, and recovery. CTA starts here because energy is the limiter for everything else.</p>
+      </div>
+    </div>
+    <figure style="margin:0" class="stack" >
+      <img class="fx" src="/assets/science-illustration.png" alt="Illustration of a grass blade with microbes, carbohydrates, chlorophyll and amino acids" width="1280" height="720" loading="lazy" style="width:100%;height:auto;display:block">
+      <figcaption class="kicker n" style="letter-spacing:.12em;margin-top:10px">Microbes · Carbohydrates · Chlorophyll · Amino Acids</figcaption>
+    </figure>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:48px 80px">
+      <div class="stack" style="gap:14px">
+        <h2 style="font-size:40px;font-weight:600;letter-spacing:-.02em">Photosynthesis vs. Respiration</h2>
+        <p style="font-size:19px">Photosynthesis stores energy. Respiration spends it. Healthy turf needs a net positive balance so it can grow, repair, and stay resilient. CTA products are designed to tilt the balance toward energy gain during stress periods.</p>
+      </div>
+      <div class="stack" style="gap:14px">
+        <h2 style="font-size:40px;font-weight:600;letter-spacing:-.02em">Why Foliar Nutrition Matters</h2>
+        <p style="font-size:19px">Foliar applications act quickly and help the plant respond when the soil is too cold, too wet, or too dry. By keeping leaf-level nutrition steady, you support photosynthesis without forcing growth spikes.</p>
+      </div>
+    </div>
+    <div class="stack" style="gap:40px">
+      <div class="g2">
+        <div class="stack" style="gap:14px">
+          <span class="kicker">Field readings · Green 10 · July 2026</span>
+          <h2 class="h-sec">Moisture, <em>mapped.</em></h2>
+        </div>
+        <p style="font-size:19px;max-width:540px">Three sensor sweeps of the same putting green across 41 hours. Each pin is one probe reading of soil moisture; the scale on the right marks the 10% and 17% thresholds. Average moisture held between 18.8% and 21.7% through two 87°F afternoons, with salinity steady at 0.19–0.25 dS/m.</p>
+      </div>
+      <div class="soil">
+        {SOIL_TESTS.map((st) => (
+          <figure style="margin:0">
+            <div style="overflow:hidden"><img src={st.src} alt={st.alt} width="600" height="800" loading="lazy"></div>
+            <figcaption>
+              <span class="when">{st.when}</span>
+              <span class="mo">{st.moist} moisture</span>
+              <span style="font-size:16px" class="muted">{st.temp} · {st.sal}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <p style="font-size:15px;font-style:italic;color:var(--color-neutral-700)">Readings taken with a handheld soil sensor. Averages are across all probe points on the green.</p>
+    </div>
+    <div class="ph dots fx"><img src="/assets/photo-roots.jpg" alt="Turf cross-section showing root system in sand" width="1280" height="720" loading="lazy" style="aspect-ratio:16/9"></div>
+  </section>
+</Base>

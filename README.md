@@ -45,6 +45,27 @@ az role assignment create \
   --scope $(az acr show -n nilproofacr --query id -o tsv)
 ```
 
+## The site
+
+Astro static site (`src/`) served by a zero-dependency Node server (`server.mjs`)
+that also handles `POST /api/form` (quote, contact and dealer forms → email via
+[Resend](https://resend.com)), real 404 responses and 301 redirects.
+
+```bash
+npm install
+npm run dev      # Astro dev server
+npm run build    # static build into dist/
+npm start        # serve dist/ on $PORT (default 8080)
+npm test         # server + form validation tests
+```
+
+- Copy and product data: `src/data/content.mjs` (lifted verbatim from the design reference) and `src/data/site.mjs`.
+- Design tokens: `src/styles/broadsheet.css` (ported as-is); site styles in `src/styles/site.css`.
+- Client behavior (menu, search, quote popup, forms, filter, compare, motion): `src/scripts/site.js`.
+- Images, label PDFs and favicons come from the separate assets bundle; see `public/assets/README.md`.
+- Set `RESEND_API_KEY` (and a verified `FORM_FROM`) on the Container App for form delivery; see `.env.example`.
+- Old-URL redirects live in `REDIRECTS` in `server.mjs`.
+
 ## Container contract
 
 Azure Container Apps injects the listening port via **`$PORT`** (commonly
