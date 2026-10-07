@@ -48,7 +48,7 @@ const isActive = (href) => (href === '/' ? path === '/' : active ? active === hr
         <a href="/contact" class="btn btn-primary hdr-quote" data-open-quote>Request a Quote</a>
         <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="site-drawer" data-menu-toggle><span></span><span></span><span></span></button>
       </div>
-      <div class="dateline"><span>Product Catalog · 2026</span><span>563-210-1616 · Dewitt, IA</span></div>
+      <div class="dateline"><a href="/assets/CTA-Catalog-2026.pdf" target="_blank" rel="noopener" data-open-catalog aria-haspopup="dialog">Product Catalog · 2026</a><a href="tel:5632101616">563-210-1616 · Dewitt, IA</a></div>
     </div>
   </header>
 
@@ -113,6 +113,16 @@ const isActive = (href) => (href === '/' ? path === '/' : active ? active === hr
       <p style="font-size:17px" class="muted">Program guidance, custom timing or volume pricing. Or call <a href="tel:5632101616">563-210-1616</a>.</p>
       <QuoteForm kind="quote" rows={4} />
     </div>
+  </dialog>
+  <dialog class="catalog" aria-label="Product Catalog 2026" data-catalog>
+    <div class="catalog-bar">
+      <span class="kicker" style="color:var(--color-text)">Product Catalog · 2026</span>
+      <span style="display:flex;gap:10px;align-items:center">
+        <a href="/assets/CTA-Catalog-2026.pdf" target="_blank" rel="noopener" class="btn btn-secondary btn-ink" style="min-height:44px">Open in new tab</a>
+        <button class="btn btn-ghost" style="min-height:44px;font-size:16px" data-close-catalog>Close</button>
+      </span>
+    </div>
+    <iframe title="Product Catalog 2026 (PDF)" data-catalog-frame></iframe>
   </dialog>
 </div>
 <script>import '../scripts/site.js';</script>
