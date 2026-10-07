@@ -1,8 +1,10 @@
-# Assets (not in this repo yet)
+# Assets
 
-The design handoff ships images, label PDFs and fonts in a separate bundle
-(`design_handoff_cta_website/assets/`). Copy its contents into this folder so
-paths such as `/assets/cta-logo.png`, `/assets/jugs/humic.png` and
-`/assets/labels/humic-front.pdf` resolve. Until then the site builds and runs,
-but images and PDFs 404 (jug images fall back to a turf photo, which is also
-missing).
+Originals from the design handoff assets bundle (logo, photos, jug PNGs, label PDFs, favicons).
+
+`opt/` is generated, not committed: `npm run optimize` (run automatically by `npm run dev` and
+`npm run build`) writes responsive AVIF and WebP variants there from the originals. Pages use
+`src/components/Img.astro`, which serves those variants and keeps the original as the fallback.
+The first run takes a few minutes; later runs skip files that are already up to date.
+
+`products/` holds the older label scans, kept for reference only and not used by the site.

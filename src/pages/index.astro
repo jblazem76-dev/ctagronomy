@@ -1,15 +1,16 @@
 ---
+import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { PROGRAMS } from '../data/content.mjs';
 import { STEPS, CHO_PRODUCTS, GALLERY, SURFACES } from '../data/site.mjs';
 const hero = '/assets/result-fairway-sun.jpg';
 ---
 <Base>
-  <link slot="head" rel="preload" as="image" href={hero}>
+  <link slot="head" rel="preload" as="image" type="image/avif" imagesrcset="/assets/opt/result-fairway-sun-480.avif 480w, /assets/opt/result-fairway-sun-800.avif 800w, /assets/opt/result-fairway-sun-1280.avif 1280w, /assets/opt/result-fairway-sun-1600.avif 1600w" imagesizes="(min-width:1280px) 1216px, 100vw" fetchpriority="high">
   <section class="wrap" style="padding-top:56px">
     <figure style="margin:0">
       <div class="hero">
-        <div class="ph-bg"><img src={hero} alt="Golf fairway in late-day sun" width="1600" height="900" fetchpriority="high"></div>
+        <div class="ph-bg"><Img src={hero} alt="Golf fairway in late-day sun" sizes="(min-width:1280px) 1216px, 100vw" loading="eager" fetchpriority="high" /></div>
         <div class="hero-scrim"></div>
         <div class="hero-copy">
           <h1 class="lines" data-fx-lines><span>High</span><span>Performance.</span><em>Max returns.</em></h1>
@@ -48,7 +49,7 @@ const hero = '/assets/result-fairway-sun.jpg';
   </section>
 
   <section class="wrap sec" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px 80px;align-items:center">
-    <img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" width="520" height="520" loading="lazy" style="width:100%;max-width:520px;height:auto;display:block">
+    <Img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" sizes="(min-width:900px) 520px, 100vw" style="width:100%;max-width:520px;height:auto;display:block" />
     <div class="stack" style="gap:22px">
       <span class="kicker m">Six carbon enhanced formulations inside</span>
       <h2 class="h-sec fx hfx"><em>Carbon, hydrogen and oxygen</em> are the building blocks of turf energy.</h2>
@@ -62,7 +63,7 @@ const hero = '/assets/result-fairway-sun.jpg';
   <section class="wrap sec stack" style="gap:32px">
     <h2 class="h-sec fx hfx">On the surfaces we serve.</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px">
-      {GALLERY.map((g) => <div class="ph dots fx"><img src={g.src} alt={g.alt} width="600" height="800" loading="lazy" style="aspect-ratio:3/4"></div>)}
+      {GALLERY.map((g) => <div class="ph dots fx"><Img src={g.src} alt={g.alt} sizes="(min-width:1100px) 300px, (min-width:600px) 50vw, 100vw" style="aspect-ratio:3/4" /></div>)}
     </div>
   </section>
 
@@ -77,7 +78,7 @@ const hero = '/assets/result-fairway-sun.jpg';
     <div class="cards">
       {PROGRAMS.map((pg) => (
         <a href="/programs" class="card-l">
-          <div class="ph dots fx"><img src={pg.img} alt={pg.title} width="640" height="480" loading="lazy" style="aspect-ratio:4/3"></div>
+          <div class="ph dots fx"><Img src={pg.img} alt={pg.title} sizes="(min-width:1100px) 300px, (min-width:600px) 50vw, 100vw" style="aspect-ratio:4/3" /></div>
           <h3>{pg.title}</h3>
           <p>{pg.science}</p>
         </a>
@@ -91,6 +92,6 @@ const hero = '/assets/result-fairway-sun.jpg';
       <p style="font-size:20px;max-width:540px">Carry a line built on agronomy rather than commodity blends. Dealers get program support, technical backing on tank mixes and rates, and a product set that sells on results.</p>
       <a href="/dealer" class="btn btn-primary btn-lg" style="align-self:flex-start">Dealer program</a>
     </div>
-    <div class="ph dots fx"><img src="/assets/result-field-wide.jpg" alt="Striped football field from the stands" width="800" height="600" loading="lazy" style="aspect-ratio:4/3"></div>
+    <div class="ph dots fx"><Img src="/assets/result-field-wide.jpg" alt="Striped football field from the stands" sizes="(min-width:900px) 560px, 100vw" style="aspect-ratio:4/3" /></div>
   </section>
 </Base>

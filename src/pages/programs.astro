@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { PROGRAMS } from '../data/content.mjs';
 ---
@@ -15,7 +16,7 @@ import { PROGRAMS } from '../data/content.mjs';
             <span class="numeral" data-count>{pg.n}</span>
             <h2 class="h-big fx hfx">{pg.title}</h2>
           </div>
-          <div class="ph dots fx"><img src={pg.img} alt={pg.title} width="1280" height="720" loading="lazy" style="aspect-ratio:16/9"></div>
+          <div class="ph dots fx"><Img src={pg.img} alt={pg.title} sizes="(min-width:900px) 580px, 100vw" style="aspect-ratio:16/9" /></div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:32px 48px">
           <div class="stack" style="gap:10px"><h3>The science</h3><p>{pg.science}</p></div>

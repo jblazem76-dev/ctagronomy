@@ -209,6 +209,7 @@ $$('img[data-jug-fallback]').forEach((img) => {
   const swap = () => {
     if (swapped) return; // the fallback photo failing must not loop
     swapped = true;
+    img.parentElement?.querySelectorAll('source').forEach((x) => x.remove()); // else <picture> keeps serving the jug
     img.src = img.dataset.jugFallback;
     img.style.cssText = 'width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;max-height:none';
   };
@@ -307,6 +308,11 @@ if (cmpPage) {
     return best < 0 ? data.order.length : best;
   };
   const num = (v) => parseFloat(String(v).replace(/[^0-9.]/g, ''));
+  const jug = (p) => {
+    const f = p.slug === 'efficiensi' ? 'efficiensi-v2' : p.slug;
+    const set = (e) => `/assets/opt/jugs/${f}-480.${e} 480w, /assets/opt/jugs/${f}-800.${e} 800w`;
+    return `<picture><source type="image/avif" srcset="${set('avif')}" sizes="260px"><source type="image/webp" srcset="${set('webp')}" sizes="260px"><img src="/assets/jugs/${f}.png" alt="${esc(p.name)}" loading="lazy" onerror="this.style.visibility='hidden'"></picture>`;
+  };
   function render() {
     const ps = slugs.map(bySlug);
     const span = ps.length + 1;
@@ -324,7 +330,7 @@ if (cmpPage) {
     }).filter((r) => !(diff && ps.length > 1 && r.same));
     const th = ps.map((p) => `
       <th><div class="colhead">
-        <div class="im"><img src="/assets/jugs/${p.slug === 'efficiensi' ? 'efficiensi-v2' : p.slug}.png" alt="${esc(p.name)}" onerror="this.style.visibility='hidden'"></div>
+        <div class="im">${jug(p)}</div>
         <span class="k-s${p.cho ? ' m' : ''}">${esc(p.kicker)}</span>
         <a class="nm" href="${p.href}">${esc(p.name)} ${p.grade ? `<span>${esc(p.grade)}</span>` : ''}</a>
         <span style="font-size:20px;font-style:italic">${esc(p.head)}</span>

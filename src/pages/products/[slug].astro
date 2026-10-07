@@ -1,4 +1,5 @@
 ---
+import Img from '../../components/Img.astro';
 import Base from '../../layouts/Base.astro';
 import { PRODUCTS, labelOf, DETAIL_PHOTOS } from '../../data/content.mjs';
 import { SITE } from '../../data/site.mjs';
@@ -29,8 +30,8 @@ const ld = {
         <a href="/contact" class="btn btn-primary btn-lg" style="align-self:flex-start;margin-top:8px" data-open-quote data-quote-msg={`I’m interested in ${p.name}. `}>Request a Quote</a>
       </div>
       <div class="stack" style="gap:20px;align-items:flex-start">
-        <img class="jug fx jugfx" src={img} alt={p.name} width="520" height="520" data-jug-fallback={photo}>
-        {p.cho && <div class="cho-badge"><img src="/assets/cho-badge.png" alt="Carbon Enhanced Formulation" width="72" height="72"><span>Carbon Enhanced Formulation</span></div>}
+        <Img class="jug fx jugfx" src={img} alt={p.name} loading="eager" sizes="(min-width:900px) 520px, 100vw" data-jug-fallback={photo} />
+        {p.cho && <div class="cho-badge"><Img src="/assets/cho-badge.png" alt="Carbon Enhanced Formulation" sizes="72px" /><span>Carbon Enhanced Formulation</span></div>}
       </div>
     </div>
     <div class="dgrid" style="padding-top:32px;align-items:start">

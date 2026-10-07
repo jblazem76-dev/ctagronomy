@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { LABEL_LIST } from '../data/content.mjs';
 ---
@@ -12,10 +13,10 @@ import { LABEL_LIST } from '../data/content.mjs';
         <p style="font-size:19px">Every product, rate and seasonal program in one document.</p>
         <a href="/assets/CTA-Catalog-2026.pdf" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="align-self:flex-start">Download the catalog (PDF)</a>
       </div>
-      <div class="ph dots fx"><img src="/assets/photo-dew.jpg" alt="Dew on turf at sunrise" width="800" height="600" loading="lazy" style="aspect-ratio:4/3"></div>
+      <div class="ph dots fx"><Img src="/assets/photo-dew.jpg" alt="Dew on turf at sunrise" sizes="(min-width:900px) 560px, 100vw" style="aspect-ratio:4/3" /></div>
     </div>
     <div class="g2 c" style="gap:40px 80px">
-      <a href="/assets/cta-3-step-method.png" target="_blank" rel="noopener"><img src="/assets/cta-3-step-method.png" alt="The CTA 3-Step Method for plant health" width="800" height="600" loading="lazy" style="width:100%;height:auto;display:block"></a>
+      <a href="/assets/cta-3-step-method.png" target="_blank" rel="noopener"><Img src="/assets/cta-3-step-method.png" alt="The CTA 3-Step Method for plant health" sizes="(min-width:900px) 560px, 100vw" style="width:100%;height:auto;display:block" /></a>
       <div class="stack" style="gap:14px">
         <h2 style="font-size:40px;font-weight:600;letter-spacing:-.02em">The CTA 3-Step Method™ chart</h2>
         <p style="font-size:19px">Feed the Plant. Condition the Soil. Manage Soil Moisture.</p>

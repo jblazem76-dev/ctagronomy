@@ -1,0 +1,28 @@
+---
+// Responsive <picture>: AVIF + WebP from public/assets/opt (built by scripts/optimize-images.mjs),
+// with the original as the <img> fallback. Falls back to a plain <img> for non-optimized files.
+import sharp from 'sharp';
+import { existsSync } from 'node:fs';
+import { WIDTHS } from '../data/image-widths.mjs';
+
+const { src, alt = '', sizes = '100vw', loading = 'lazy', fetchpriority, class: cls, style, ...rest } = Astro.props;
+const file = `public${src}`;
+const opt = src.startsWith('/assets/') && existsSync(file) && /\.(jpe?g|png)$/i.test(src);
+let w, h, widths = [];
+if (existsSync(file)) {
+  const m = await sharp(file).metadata();
+  w = m.width; h = m.height;
+  widths = [...new Set(WIDTHS.map((x) => Math.min(x, w)))];
+}
+const stem = src.replace(/^\/assets\//, '').replace(/\.[^.]+$/, '');
+const set = (fmt) => widths.map((x) => `/assets/opt/${stem}-${x}.${fmt} ${x}w`).join(', ');
+---
+{opt ? (
+  <picture>
+    <source type="image/avif" srcset={set('avif')} sizes={sizes}>
+    <source type="image/webp" srcset={set('webp')} sizes={sizes}>
+    <img src={src} alt={alt} width={w} height={h} loading={loading} decoding="async" fetchpriority={fetchpriority} class={cls} style={style} {...rest}>
+  </picture>
+) : (
+  <img src={src} alt={alt} width={w} height={h} loading={loading} class={cls} style={style} {...rest}>
+)}

@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { SOIL_TESTS } from '../data/content.mjs';
 ---
@@ -9,14 +10,14 @@ import { SOIL_TESTS } from '../data/content.mjs';
       <p class="lede">Clear, practical science. CTA focuses on what improves plant energy and stability without adding noise to your decision-making.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px 80px;align-items:center">
-      <img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" width="440" height="440" style="width:100%;max-width:440px;height:auto;display:block">
+      <Img class="fx" src="/assets/cho-badge.png" alt="CHO — Carbon Enhanced Formulations" loading="eager" sizes="(min-width:900px) 440px, 100vw" style="width:100%;max-width:440px;height:auto;display:block" />
       <div class="stack" style="gap:16px">
         <h2 class="h-sec">The Carbon Advantage <em>(CHO)</em></h2>
         <p style="font-size:20px">Carbon, hydrogen, and oxygen are the building blocks of turf energy. When these elements are supported through photosynthesis, the plant has more energy to allocate to roots, density, and recovery. CTA starts here because energy is the limiter for everything else.</p>
       </div>
     </div>
     <figure style="margin:0" class="stack" >
-      <img class="fx" src="/assets/science-illustration.png" alt="Illustration of a grass blade with microbes, carbohydrates, chlorophyll and amino acids" width="1280" height="720" loading="lazy" style="width:100%;height:auto;display:block">
+      <Img class="fx" src="/assets/science-illustration.png" alt="Illustration of a grass blade with microbes, carbohydrates, chlorophyll and amino acids" sizes="(min-width:1280px) 1216px, 100vw" style="width:100%;height:auto;display:block" />
       <figcaption class="kicker n" style="letter-spacing:.12em;margin-top:10px">Microbes · Carbohydrates · Chlorophyll · Amino Acids</figcaption>
     </figure>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:48px 80px">
@@ -40,7 +41,7 @@ import { SOIL_TESTS } from '../data/content.mjs';
       <div class="soil">
         {SOIL_TESTS.map((st) => (
           <figure style="margin:0">
-            <div style="overflow:hidden"><img src={st.src} alt={st.alt} width="600" height="800" loading="lazy"></div>
+            <div style="overflow:hidden"><Img src={st.src} alt={st.alt} sizes="(min-width:900px) 380px, 100vw" style="width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center 42%;display:block" /></div>
             <figcaption>
               <span class="when">{st.when}</span>
               <span class="mo">{st.moist} moisture</span>
@@ -51,6 +52,6 @@ import { SOIL_TESTS } from '../data/content.mjs';
       </div>
       <p style="font-size:15px;font-style:italic;color:var(--color-neutral-700)">Readings taken with a handheld soil sensor. Averages are across all probe points on the green.</p>
     </div>
-    <div class="ph dots fx"><img src="/assets/photo-roots.jpg" alt="Turf cross-section showing root system in sand" width="1280" height="720" loading="lazy" style="aspect-ratio:16/9"></div>
+    <div class="ph dots fx"><Img src="/assets/photo-roots.jpg" alt="Turf cross-section showing root system in sand" sizes="(min-width:1280px) 1216px, 100vw" style="aspect-ratio:16/9" /></div>
   </section>
 </Base>

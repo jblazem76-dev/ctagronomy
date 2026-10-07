@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { APPLY_STEPS, DEALER_STEPS, DEALER_GET, DEALER_WHO } from '../data/site.mjs';
 ---
@@ -9,7 +10,7 @@ import { APPLY_STEPS, DEALER_STEPS, DEALER_GET, DEALER_WHO } from '../data/site.
         <h1 class="h-page">Become a <em>CTA dealer.</em></h1>
         <p class="lede">Carry a line built on agronomy rather than commodity blends. Dealers get program support, technical backing on tank mixes and rates, and a product set that sells on results.</p>
       </div>
-      <div class="ph dots fx"><img src="/assets/result-goalpost.jpg" alt="Football field with goalpost and press box" width="1680" height="720" style="aspect-ratio:21/9;object-position:center 40%"></div>
+      <div class="ph dots fx"><Img src="/assets/result-goalpost.jpg" alt="Football field with goalpost and press box" loading="eager" sizes="(min-width:1280px) 1216px, 100vw" style="aspect-ratio:21/9;object-position:center 40%" /></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:48px">
       {DEALER_STEPS.map((s) => (

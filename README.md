@@ -62,7 +62,7 @@ npm test         # server + form validation tests
 - Copy and product data: `src/data/content.mjs` (lifted verbatim from the design reference) and `src/data/site.mjs`.
 - Design tokens: `src/styles/broadsheet.css` (ported as-is); site styles in `src/styles/site.css`.
 - Client behavior (menu, search, quote popup, forms, filter, compare, motion): `src/scripts/site.js`.
-- Images, label PDFs and favicons come from the separate assets bundle; see `public/assets/README.md`.
+- Images, label PDFs and favicons are in `public/assets/`. `npm run build` first generates responsive AVIF/WebP variants (`scripts/optimize-images.mjs`, a few minutes on a cold build); see `public/assets/README.md`.
 - Set `RESEND_API_KEY` (and a verified `FORM_FROM`) on the Container App for form delivery; see `.env.example`.
 - Old-URL redirects live in `REDIRECTS` in `server.mjs`.
 

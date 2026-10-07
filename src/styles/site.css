@@ -29,6 +29,7 @@ em{font-weight:400}
 .muted{color:var(--color-neutral-800)}
 .caution{font-size:15px;color:var(--color-accent-2-800)}
 img{max-width:100%}
+picture{display:contents}
 .ph{overflow:hidden}
 .ph img{width:100%;height:auto;display:block;object-fit:cover}
 
@@ -58,7 +59,8 @@ img{max-width:100%}
 .menu-open .scrim{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;bottom:0;z-index:90;width:min(420px,88vw);background:var(--color-bg);box-shadow:var(--shadow-lg);isolation:isolate;overflow:hidden;display:flex;flex-direction:column;transform:translateX(104%);visibility:hidden;transition:transform .4s cubic-bezier(.4,0,.6,1),visibility 0s linear .4s;padding-bottom:env(safe-area-inset-bottom)}
 .menu-open .drawer{transform:none;visibility:visible;transition:transform .5s cubic-bezier(.2,.7,.2,1),visibility 0s}
-.drawer-bg{position:absolute;inset:0;z-index:-1;background:url(/assets/menu-backdrop.jpg) center 40%/cover no-repeat;opacity:.25;pointer-events:none}
+.drawer-bg{position:absolute;inset:0;z-index:-1;background:center 40%/cover no-repeat;opacity:.25;pointer-events:none}
+.menu-open .drawer-bg{background-image:image-set(url(/assets/opt/menu-backdrop-800.avif) type("image/avif"),url(/assets/opt/menu-backdrop-800.webp) type("image/webp"),url(/assets/menu-backdrop.jpg) type("image/jpeg"))}
 .drawer-top{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0}
 .drawer-top .kicker{color:var(--color-text)}
 .xbtn{width:48px;height:48px;position:relative;background:transparent;border:1px solid var(--color-text);border-radius:var(--radius-md);cursor:pointer}
