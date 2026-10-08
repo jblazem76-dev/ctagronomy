@@ -2,10 +2,24 @@
 import Img from '../components/Img.astro';
 import Base from '../layouts/Base.astro';
 import { PROGRAMS } from '../data/content.mjs';
-import { STEPS, CHO_PRODUCTS, GALLERY, SURFACES } from '../data/site.mjs';
+import { SITE, STEPS, CHO_PRODUCTS, GALLERY, SURFACES } from '../data/site.mjs';
 const hero = '/assets/result-fairway-sun.jpg';
+const ld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization', '@id': SITE.url + '/#org', name: SITE.name, url: SITE.url + '/',
+      logo: SITE.url + '/assets/cta-logo.png', email: SITE.email, telephone: '+1-563-210-1616',
+      description: SITE.description,
+      address: { '@type': 'PostalAddress', streetAddress: '215 E 2nd Street', addressLocality: 'Dewitt', addressRegion: 'IA', postalCode: '52742', addressCountry: 'US' },
+      contactPoint: { '@type': 'ContactPoint', contactType: 'sales', telephone: '+1-563-210-1616', email: SITE.email, areaServed: 'US' },
+    },
+    { '@type': 'WebSite', '@id': SITE.url + '/#site', url: SITE.url + '/', name: SITE.name, publisher: { '@id': SITE.url + '/#org' } },
+  ],
+};
 ---
 <Base>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
   <link slot="head" rel="preload" as="image" type="image/avif" imagesrcset="/assets/opt/result-fairway-sun-480.avif 480w, /assets/opt/result-fairway-sun-800.avif 800w, /assets/opt/result-fairway-sun-1280.avif 1280w, /assets/opt/result-fairway-sun-1600.avif 1600w" imagesizes="(min-width:1280px) 1216px, 100vw" fetchpriority="high">
   <section class="wrap" style="padding-top:56px">
     <figure style="margin:0">

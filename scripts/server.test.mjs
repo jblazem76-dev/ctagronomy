@@ -12,6 +12,44 @@ test('validate', () => {
   assert.equal(validate({ form: 'zzz' }).ok, false);
 });
 
+test('compression, validators, caching and ranges', async () => {
+  const port = await start();
+  const url = `http://localhost:${port}`;
+  const raw = (p, headers = {}) => fetch(url + p, { redirect: 'manual', headers: { 'accept-encoding': 'identity', ...headers } });
+
+  const plain = await raw('/');
+  const plainLen = (await plain.arrayBuffer()).byteLength;
+  const etag = plain.headers.get('etag');
+  assert.ok(etag, 'HTML has an ETag');
+  assert.match(plain.headers.get('cache-control'), /must-revalidate/);
+
+  const br = await fetch(url + '/', { headers: { 'accept-encoding': 'br' } });
+  assert.equal(br.headers.get('content-encoding'), 'br');
+  assert.match(br.headers.get('vary'), /Accept-Encoding/);
+  assert.ok(Number(br.headers.get('content-length')) < plainLen / 2, 'brotli shrinks the page');
+  assert.match(await br.text(), /<title>/, 'decodes to the real page');
+  const gzip = await fetch(url + '/', { headers: { 'accept-encoding': 'gzip' } });
+  assert.equal(gzip.headers.get('content-encoding'), 'gzip');
+
+  const again = await raw('/', { 'if-none-match': etag });
+  assert.equal(again.status, 304);
+  assert.equal((await again.arrayBuffer()).byteLength, 0);
+
+  const font = await raw('/assets/fonts/source-serif-4-opsz-normal.woff2');
+  assert.equal(font.status, 200);
+  assert.match(font.headers.get('cache-control'), /immutable/);
+  assert.equal(font.headers.get('content-encoding'), null, 'woff2 is already compressed');
+
+  const pdf = await raw('/assets/CTA-Catalog-2026.pdf', { range: 'bytes=0-99' });
+  assert.equal(pdf.status, 206);
+  assert.equal((await pdf.arrayBuffer()).byteLength, 100);
+  assert.match(pdf.headers.get('content-range'), /^bytes 0-99\/\d+$/);
+  assert.equal((await raw('/assets/CTA-Catalog-2026.pdf', { range: 'bytes=999999999-' })).status, 416);
+
+  assert.equal((await raw('/nope')).headers.get('cache-control'), 'no-store');
+  server.closeAllConnections(); server.close();
+});
+
 test('serves pages, real 404s, redirects, form api', async () => {
   const port = await start();
   const get = (p, o) => fetch(`http://localhost:${port}${p}`, { redirect: 'manual', ...o });

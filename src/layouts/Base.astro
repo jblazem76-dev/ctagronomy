@@ -3,6 +3,7 @@ import '../styles/broadsheet.css';
 import '../styles/site.css';
 import { NAV, SITE, SUGGEST } from '../data/site.mjs';
 import QuoteForm from '../components/QuoteForm.astro';
+import Img from '../components/Img.astro';
 
 const { title, description = SITE.description, active = '', noindex = false, ogImage = '/assets/og-image.jpg', nosidetab = false } = Astro.props;
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/$/, '') || '/';
@@ -34,9 +35,9 @@ const isActive = (href) => (href === '/' ? path === '/' : active ? active === hr
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png">
   <link rel="apple-touch-icon" href="/assets/favicon-180.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="preload" href="/assets/fonts/source-serif-4-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/source-serif-4-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <meta name="theme-color" content="#f3f2f2">
   <slot name="head" />
 </head>
 <body data-nosidetab={nosidetab ? '' : undefined}>
@@ -44,7 +45,7 @@ const isActive = (href) => (href === '/' ? path === '/' : active ? active === hr
   <header class="site-header">
     <div class="wrap" style="padding-top:14px">
       <div class="hdr-row">
-        <a href="/" class="brand"><img src="/assets/cta-logo.png" alt="Central Turf Agronomy" width="48" height="48"><span>Central Turf Agronomy</span></a>
+        <a href="/" class="brand"><Img src="/assets/cta-logo.png" alt="Central Turf Agronomy" sizes="63px" loading="eager" /><span>Central Turf Agronomy</span></a>
         <nav class="nav-d" aria-label="Primary">
           {NAV.map((n) => <a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>)}
         </nav>
@@ -94,7 +95,7 @@ const isActive = (href) => (href === '/' ? path === '/' : active ? active === hr
     <div class="foot-rule"></div>
     <div class="foot-in">
       <div class="stack" style="flex:1 1 340px;max-width:460px;gap:16px">
-        <img src="/assets/cta-logo.png" alt="Central Turf Agronomy" height="72" style="height:72px;width:auto;align-self:flex-start">
+        <Img src="/assets/cta-logo.png" alt="Central Turf Agronomy" sizes="94px" style="height:72px;width:auto;align-self:flex-start" />
         <p style="font-size:16px">{SITE.tagline}</p>
         <p style="font-size:16px"><a href="tel:5632101616">563-210-1616</a> · <a href="mailto:ctagronomy@gmail.com">ctagronomy@gmail.com</a></p>
       </div>

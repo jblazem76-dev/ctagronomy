@@ -32,7 +32,10 @@ for await (const rel of walk(SRC)) {
       const out = `${base}-${w}.${fmt}`;
       if (await fresh(out, src)) continue;
       const img = sharp(src).rotate().resize({ width: w, withoutEnlargement: true });
-      await (fmt === 'avif' ? img.avif({ quality: 48, effort: 3 }) : img.webp({ quality: 78 })).toFile(out);
+      // Photos (JPEG sources) compress well at lower quality: grass texture hides the artifacts. PNGs are
+      // diagrams, renders and logos, so they keep a higher quality to stay crisp.
+      const photo = /\.jpe?g$/i.test(rel);
+      await (fmt === 'avif' ? img.avif({ quality: photo ? 38 : 48, effort: 3 }) : img.webp({ quality: photo ? 74 : 80 })).toFile(out);
       made++;
     }
   }
