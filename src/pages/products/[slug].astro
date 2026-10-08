@@ -11,13 +11,34 @@ const { p, photo } = Astro.props;
 const lab = labelOf(p.slug);
 const img = `/assets/jugs/${p.slug === 'efficiensi' ? 'efficiensi-v2' : p.slug}.png`;
 const full = p.name + (p.grade ? ' ' + p.grade : '');
+// Meta description: name, category and headline first, then as many benefits as fit in ~155 characters.
+const clip = (str) => str.replace(/\.$/, '');
+let desc = `${full} (${p.kicker}) from Central Turf Agronomy. ${p.head}`;
+for (const b of p.bens) {
+  const next = `${desc} ${clip(b)}.`;
+  if (next.length > 155) break;
+  desc = next;
+}
 const ld = {
-  '@context': 'https://schema.org', '@type': 'Product', name: full, description: p.head + ' ' + p.bens.join('. ') + '.',
-  image: new URL(img, SITE.url).href, category: p.kicker, brand: { '@type': 'Brand', name: SITE.name },
-  url: new URL(p.href, SITE.url).href,
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Product', name: full, description: p.head + ' ' + p.bens.map(clip).join('. ') + '.',
+      image: new URL(img, SITE.url).href, category: p.kicker, brand: { '@type': 'Brand', name: SITE.name },
+      url: new URL(p.href, SITE.url).href,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: SITE.url + '/products' },
+        { '@type': 'ListItem', position: 3, name: full, item: new URL(p.href, SITE.url).href },
+      ],
+    },
+  ],
 };
 ---
-<Base title={full} description={`${p.head} ${p.bens[0]}.`} active="/products" ogImage={img}>
+<Base title={full} description={desc} active="/products" ogImage={img}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
   <section class="wrap stack" style="padding-top:40px;gap:40px" data-product-page={p.slug}>
     <a href="/products" class="btn btn-ghost" style="align-self:flex-start;font-size:16px;white-space:nowrap">← All products</a>

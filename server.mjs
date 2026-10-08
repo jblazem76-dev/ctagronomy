@@ -6,9 +6,13 @@
 //      FORM_FROM (a sender on a Resend-verified domain; default onboarding@resend.dev)
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
+import { brotliCompress, gzip, constants as zc } from 'node:zlib';
+import { promisify } from 'node:util';
 import { join, extname, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const brotli = promisify(brotliCompress);
+const gz = promisify(gzip);
 const DIST = resolve(fileURLToPath(new URL('./dist', import.meta.url)));
 const PORT = Number(process.env.PORT) || 8080;
 const TO = process.env.FORM_TO || 'ctagronomy@gmail.com';
@@ -56,17 +60,66 @@ async function resolveFile(pathname) {
 }
 
 function cache(file) {
-  if (file.includes('/_astro/')) return 'public, max-age=31536000, immutable';
-  if (/\.(png|jpe?g|webp|avif|svg|pdf|woff2?)$/.test(file)) return 'public, max-age=86400';
-  return 'public, max-age=0, must-revalidate';
+  if (file.includes('/_astro/') || file.includes('/assets/fonts/')) return 'public, max-age=31536000, immutable';
+  if (/\.pdf$/.test(file)) return 'public, max-age=86400, must-revalidate';
+  if (/\.(png|jpe?g|webp|avif|svg|ico|woff2?)$/.test(file)) return 'public, max-age=604800, stale-while-revalidate=86400';
+  return 'public, max-age=0, must-revalidate'; // HTML/JSON/XML: always revalidate, but a 304 is tiny
+}
+
+const COMPRESSIBLE = /\.(html|css|js|json|xml|txt|svg)$/;
+const zcache = new Map(); // `${etag}|${enc}` -> Buffer (the site is small and static, so this stays tiny)
+
+async function body(file, buf, etag, enc) {
+  const key = `${etag}|${enc}`;
+  let out = zcache.get(key);
+  if (!out) {
+    out = enc === 'br'
+      ? await brotli(buf, { params: { [zc.BROTLI_PARAM_QUALITY]: 9, [zc.BROTLI_PARAM_SIZE_HINT]: buf.length } })
+      : await gz(buf, { level: 9 });
+    zcache.set(key, out);
+  }
+  return out;
 }
 
 async function serve(req, res, pathname) {
   let status = 200;
   let file = await resolveFile(pathname);
   if (!file) { status = 404; file = join(DIST, '404.html'); }
+  const st = await stat(file);
+  const type = TYPES[extname(file)] || 'application/octet-stream';
+  const headers = { ...SECURITY, 'Content-Type': type, 'Accept-Ranges': 'bytes' };
+
+  if (status === 200) {
+    const etag = `W/"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
+    headers.ETag = etag;
+    headers['Last-Modified'] = st.mtime.toUTCString();
+    headers['Cache-Control'] = cache(file);
+    if (req.headers['if-none-match'] === etag) { res.writeHead(304, headers); return res.end(); }
+    if (COMPRESSIBLE.test(file)) headers.Vary = 'Accept-Encoding';
+
+    // Byte ranges (PDF viewers fetch the catalog in pieces instead of all 12 MB up front).
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (range && !COMPRESSIBLE.test(file) && (range[1] || range[2])) {
+      let start = range[1] === '' ? st.size - Number(range[2]) : Number(range[1]);
+      let end = range[1] === '' || range[2] === '' ? st.size - 1 : Math.min(Number(range[2]), st.size - 1);
+      if (start < 0) start = 0;
+      if (start > end || start >= st.size) { res.writeHead(416, { ...headers, 'Content-Range': `bytes */${st.size}` }); return res.end(); }
+      const buf = (await readFile(file)).subarray(start, end + 1);
+      res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${st.size}`, 'Content-Length': buf.length });
+      return res.end(req.method === 'HEAD' ? undefined : buf);
+    }
+
+    let buf = await readFile(file);
+    const accept = String(req.headers['accept-encoding'] || '');
+    const enc = COMPRESSIBLE.test(file) && buf.length > 1024 ? (/\bbr\b/.test(accept) ? 'br' : /\bgzip\b/.test(accept) ? 'gzip' : '') : '';
+    if (enc) { buf = await body(file, buf, etag, enc); headers['Content-Encoding'] = enc; }
+    headers['Content-Length'] = buf.length;
+    res.writeHead(200, headers);
+    return res.end(req.method === 'HEAD' ? undefined : buf);
+  }
+
   const buf = await readFile(file);
-  res.writeHead(status, { ...SECURITY, 'Content-Type': TYPES[extname(file)] || 'application/octet-stream', 'Content-Length': buf.length, 'Cache-Control': status === 404 ? 'no-store' : cache(file) });
+  res.writeHead(404, { ...headers, 'Content-Length': buf.length, 'Cache-Control': 'no-store' });
   res.end(req.method === 'HEAD' ? undefined : buf);
 }
 
